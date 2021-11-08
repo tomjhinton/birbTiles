@@ -148,9 +148,7 @@ vec2 barrelPincushion(vec2 uv, float k) {
 void main(){
   const int one = 1;
   float alpha = 1.;
-  vec2 uv = (gl_FragCoord.xy - uResolution * .5) / uResolution.yy ;
-  uv = vUv - .5;
-
+  vec2 uv = vUv - .5;
 
   float effectRadius = 1.5;
   float effectAngle = 1. * PI ;
@@ -159,18 +157,15 @@ void main(){
 
   vec2 st = uv;
 
-
-
-
   vec2 rote = rotateUV(uv, vec2(.0), PI * vTime * .05);
   vec2 roteC = rotateUV(uv, vec2(.0), -PI * vTime * .05);
 
   vec3 color = vec3( 0.);
 
-    st *= 5. ;
+    st *= 5. * (uMouse.x/uMouse.y) ;
 
     st = barrelPincushion(st, 10.);
-    // Tile the space
+
     vec2 i_st = floor(st);
     vec2 f_st = fract(st);
 
@@ -194,7 +189,7 @@ void main(){
     }
 
     vec2 st2 = rote;
-    st2 *= 6. ;
+    st2 *= 6. * (uMouse.y/uMouse.x) ;;
 
     // Tile the space
     vec2 i_st2 = floor(st2);
@@ -220,7 +215,7 @@ void main(){
     }
 
     vec2 st3 = roteC;
-    st3 *= 9. ;
+    st3 *= 9. / (uMouse.x/uMouse.y) ;;
 
     vec2 i_st3 = floor(st3);
     vec2 f_st3 = fract(st3);

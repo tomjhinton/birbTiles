@@ -252,7 +252,10 @@ const window1Material  = new THREE.ShaderMaterial({
   depthWrite: true,
   uniforms: {
     uTime: { value: 0},
-    uResolution: { type: 'v2', value: new THREE.Vector2() }
+    uResolution: { type: 'v2', value: new THREE.Vector2() },
+    uMouse: {
+      value: {x: 0.5, y: 0.5}
+    }
   },
   vertexShader: vertexShader,
   fragmentShader: fragArray[window1Selected],
@@ -264,7 +267,10 @@ const window2Material  = new THREE.ShaderMaterial({
   depthWrite: true,
   uniforms: {
     uTime: { value: 0},
-    uResolution: { type: 'v2', value: new THREE.Vector2() }
+    uResolution: { type: 'v2', value: new THREE.Vector2() },
+    uMouse: {
+      value: {x: 0.5, y: 0.5}
+    }
   },
   vertexShader: vertexShader,
   fragmentShader: fragArray[window2Selected],
@@ -277,7 +283,10 @@ const window3Material  = new THREE.ShaderMaterial({
   depthWrite: true,
   uniforms: {
     uTime: { value: 0},
-    uResolution: { type: 'v2', value: new THREE.Vector2() }
+    uResolution: { type: 'v2', value: new THREE.Vector2() },
+    uMouse: {
+      value: {x: 0.5, y: 0.5}
+    }
   },
   vertexShader: vertexShader,
   fragmentShader: fragArray[window3Selected],
@@ -290,7 +299,10 @@ const window4Material  = new THREE.ShaderMaterial({
   depthWrite: true,
   uniforms: {
     uTime: { value: 0},
-    uResolution: { type: 'v2', value: new THREE.Vector2() }
+    uResolution: { type: 'v2', value: new THREE.Vector2() },
+    uMouse: {
+      value: {x: 0.5, y: 0.5}
+    }
   },
   vertexShader: vertexShader,
   fragmentShader: fragArray[window4Selected],
@@ -303,7 +315,10 @@ const window5Material  = new THREE.ShaderMaterial({
   depthWrite: true,
   uniforms: {
     uTime: { value: 0},
-    uResolution: { type: 'v2', value: new THREE.Vector2() }
+    uResolution: { type: 'v2', value: new THREE.Vector2() },
+    uMouse: {
+      value: {x: 0.5, y: 0.5}
+    }
   },
   vertexShader: vertexShader,
   fragmentShader: fragArray[window5Selected],
@@ -316,7 +331,10 @@ const window6Material  = new THREE.ShaderMaterial({
   depthWrite: true,
   uniforms: {
     uTime: { value: 0},
-    uResolution: { type: 'v2', value: new THREE.Vector2() }
+    uResolution: { type: 'v2', value: new THREE.Vector2() },
+    uMouse: {
+      value: {x: 0.5, y: 0.5}
+    }
   },
   vertexShader: vertexShader,
   fragmentShader: fragArray[window6Selected],
@@ -520,6 +538,17 @@ function onClick() {
 
 
 }
+
+window.addEventListener('mousemove', function (e) {
+
+  materials.map( x=> {
+    x.uniforms.uMouse.value.x =  (e.clientX / window.innerWidth) * 2 - 1
+    x.uniforms.uMouse.value.y = -(event.clientY / window.innerHeight) * 2 + 1
+  })
+
+
+})
+
 
 
 const clock = new THREE.Clock()
