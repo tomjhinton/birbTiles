@@ -9,15 +9,8 @@ const float TAU = PI * 2.;
 uniform vec2 uResolution;
 uniform vec2 uMouse;
 
-
 varying vec2 vUv;
 varying float vTime;
-
-const vec2 v60 = vec2( cos(PI/3.0), sin(PI/3.0));
-const vec2 vm60 = vec2(cos(-PI/3.0), sin(-PI/3.0));
-const mat2 rot60 = mat2(v60.x,-v60.y,v60.y,v60.x);
-const mat2 rotm60 = mat2(vm60.x,-vm60.y,vm60.y,vm60.x);
-
 
 void coswarp(inout vec3 trip, float warpsScale ){
 
@@ -26,14 +19,6 @@ void coswarp(inout vec3 trip, float warpsScale ){
   trip.xyz += warpsScale * .025 * cos(17. * trip.yzx + (vTime * .25));
 }
 
-
-
-float triangleDF(vec2 uv){
-  uv =(uv * 2. -1.) * 2.;
-  return max(
-    abs(uv.x) * 0.866025 + uv.y * 0.5 ,
-     -1. * uv.y * 0.5);
-}
 
 float aastep(float threshold, float value) {
 
@@ -46,47 +31,57 @@ float fill(float x, float size) {
     return 1.-aastep(size, x);
 }
 
-float triangleGrid(vec2 p, float stepSize,float vertexSize,float lineSize)
-{
-    // equilateral triangle grid
-    vec2 fullStep= vec2( stepSize , stepSize*v60.y);
-    vec2 halfStep=fullStep/2.0;
-    vec2 grid = floor(p/fullStep);
-    vec2 offset = vec2( (mod(grid.y,2.0)==1.0) ? halfStep.x : 0. , 0.);
-   	// tiling
-    vec2 uv = mod(p+offset,fullStep)-halfStep;
-    float d2=dot(uv,uv);
-    return vertexSize/d2 + // vertices
-    	max( abs(lineSize/(uv*rotm60).y), // lines -60deg
-        	 max ( abs(lineSize/(uv*rot60).y), // lines 60deg
-        	  	   abs(lineSize/(uv.y)) )); // h lines
-}
 
-vec2 rotateUV(vec2 uv, vec2 pivot, float rotation) {
-  mat2 rotation_matrix=mat2(  vec2(sin(rotation),-cos(rotation)),
-                              vec2(cos(rotation),sin(rotation))
-                              );
-  uv -= pivot;
-  uv= uv*rotation_matrix;
-  uv += pivot;
-  return uv;
-}
+const vec2 s = vec2(1, 1.7320508);
+
+
+float hex(in vec2 p){
+
+		 p = abs(p);
+
+		 return max(dot(p, s*.5), p.x); // Hexagon.
+
+ }
+vec4 getHex(vec2 p){
+
+		 vec4 hC = floor(vec4(p, p - vec2(.5, 1))/s.xyxy) + .5;
+
+		 vec4 h = vec4(p - hC.xy*s, p - (hC.zw + .5)*s);
+
+		 return dot(h.xy, h.xy)<dot(h.zw, h.zw) ? vec4(h.xy, hC.xy) : vec4(h.zw, hC.zw + vec2(.5, 1));
+
+ }
+
+float stroke(float x, float s, float w){
+   float d = step(s,x + w * .5) -
+   step(s, x-w *.5);
+
+
+   return clamp(d, 0., 1.);
+ }
+
 
 
 void main(){
   float alpha = 1.;
-  vec2 uv = vUv;
-	vec2 rote = rotateUV(uv, vec2(.0), PI * vTime * .005);
-	vec2 roteC = rotateUV(uv, vec2(.0), -PI * vTime * .005);
+  vec2 uv = vUv ;
 
-	float r = fill(triangleGrid(rote, 0.3, 0.000005,0.001), .1);
-	float g = triangleGrid(uv, 0.2, 0.00000005,0.001);
-	float b = fill(triangleGrid(roteC, 0.3, 0.000005,0.001), .1);
+	vec4 hex_uv = getHex(uv * 10.);
 
-  vec3 color = vec3(r, g,  b) ;
+	float hexf = stroke(hex(hex_uv.xy), .5, .1);
 
-  coswarp(color,3.);
+	vec4 hex_uv2 = getHex(uv * 10.);
+	float hexf2 = fill(hex(hex_uv.xy), .3);
 
+	vec4 hex_uv3 = getHex(uv * 10.);
+	float hexf3 = stroke(hex(hex_uv.xy), .5, .3);
+
+  vec3 color = vec3(uv.x, 1.,  uv.y) ;
+
+  coswarp(color,6.);
+	color = mix(color, 1.-color, hexf);
+	color = mix(color, 1.-color, hexf2);
+	color = mix(color, 1.-color, hexf3);
 
  gl_FragColor =  vec4(color, alpha);
 

@@ -106,14 +106,15 @@ void main(){
 
   vec2 rote3 = barrelPincushion(rote, 3.);
 	float r = fill(triangleGrid(vUv, 0.05, 0.000000005,0.001), .5);
-	float g = triangleGrid(uv, 0.2, 0.00000005,0.1);
+	float g = triangleGrid(uv, 0.02, 0.00000005,0.001);
 
   vec3 color = vec3(uv.x, uv.y,  1.) ;
 
 
   coswarp(color ,6.);
 
-  color *= r;
+  color = mix(color, 1.-color, r);
+  color = mix(color, 1.-color, g);
 
 
 
