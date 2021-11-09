@@ -10,28 +10,11 @@ varying float vTime;
 
 
 
-
-float stroke(float x, float s, float w){
-  float d = step(s, x+ w * .5) - step(s, x - w * .5);
-  return clamp(d, 0., 1.);
-}
-
-float wiggly(float cx, float cy, float amplitude, float frequency, float spread){
-
-  float w = sin(cx * amplitude * frequency * PI) * cos(cy * amplitude * frequency * PI) * spread;
-
-  return w;
-}
-
-
-
-
 void coswarp(inout vec3 trip, float warpsScale ){
 
   trip.xyz += warpsScale * .1 * cos(3. * trip.yzx + (vTime * .25));
   trip.xyz += warpsScale * .05 * cos(11. * trip.yzx + (vTime * .25));
   trip.xyz += warpsScale * .025 * cos(17. * trip.yzx + (vTime * .25));
-  // trip.xyz += warpsScale * .0125 * cos(21. * trip.yzx + (vTime * .25));
 }
 
 vec2 rotateUV(vec2 uv, vec2 pivot, float rotation) {
@@ -44,28 +27,6 @@ vec2 rotateUV(vec2 uv, vec2 pivot, float rotation) {
   return uv;
 }
 
-float box(vec2 _st, vec2 _size, float _smoothEdges){
-    _size = vec2(0.5)-_size*0.5;
-    vec2 aa = vec2(_smoothEdges*0.5);
-    vec2 uv = smoothstep(_size,_size+aa,_st);
-    uv *= smoothstep(_size,_size+aa,vec2(1.0)-_st);
-    return uv.x*uv.y;
-}
-
-
-
-
-
-
-
-vec2 getRadialUv(vec2 uv) {
-	float angle = atan(uv.x, -uv.y);
-	angle = abs(angle);
-	vec2 radialUv = vec2(0.0);
-	radialUv.x = angle / (PI * 2.0) + 0.5;
-	radialUv.y = 1.0 - pow(1.0 - length(uv), 4.0);
-	return radialUv;
-}
 
 
 
@@ -77,13 +38,6 @@ float random (in vec2 _st) {
 
 
 
-void coswarp2(inout vec2 trip, float warpsScale ){
-
-  trip.xy += warpsScale * .1 * cos(3. * trip.yx + (vTime * .25));
-  trip.xy += warpsScale * .05 * cos(11. * trip.yx + (vTime * .25));
-  trip.xy += warpsScale * .025 * cos(17. * trip.yx + (vTime * .25));
-  // trip.xyz += warpsScale * .0125 * cos(21. * trip.yzx + (vTime * .25));
-}
 
 vec2 rotate2D (vec2 _st, float _angle) {
     _st -= 0.5;

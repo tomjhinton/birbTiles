@@ -99,9 +99,8 @@ vec3 getnormalsmall (vec3 p)
 }
 
 vec4 raymarch(vec3 rayDir, vec3 pos) {
-	// Define the start state
-	// reset to 0 steps
-	float currentDist = 0.0; // signed distance
+
+	float currentDist = 0.0; 
 	float rayDepth = 0.0;
 	vec3 rayLength = vec3(0.0);
 	vec3 light = normalize(vec3(1.,sin(vTime),2.));
@@ -137,8 +136,8 @@ vec4 raymarch(vec3 rayDir, vec3 pos) {
 		);
 
 
- 	    if (currentDist < EPSILON) return shapeColor; // We're inside the scene - magic happens here
- 		if (rayDepth > RAYMARCH_MAX_DIST) return bgColor; // We've gone too far
+ 	    if (currentDist < EPSILON) return shapeColor;
+ 		if (rayDepth > RAYMARCH_MAX_DIST) return bgColor;
 	}
 
 	return bgColor;
